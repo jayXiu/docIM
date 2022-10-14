@@ -21,9 +21,13 @@ import java.util.Map;
 
 @Slf4j
 @Data
+@Component
+@Scope("prototype")
 public class IMServerHandler extends SimpleChannelInboundHandler<String> {
 
+    @Autowired
     private RedisUtil redisUtil;
+    @Value("${im.listener}")
     private String listener;
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

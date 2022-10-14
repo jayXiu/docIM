@@ -12,23 +12,21 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class IMServer {
 
+    @Value("${im.port}")
     private int port;
+    @Autowired
+    private BeanFactory beanFactory;
 
-    private RedisUtil redisUtil;
-
-    private String listener;
-
-    public IMServer(int port, RedisUtil redisUtil, String listener){
-        this.port = port;
-        this.redisUtil = redisUtil;
-        this.listener = listener;
-    }
+    public IMServer(){}
 
     public void run() throws Exception{
 
@@ -52,10 +50,9 @@ public class IMServer {
                             pipeline.addLast("decoder", new StringDecoder());
                             //向pipeline加入编码器
                             pipeline.addLast("encoder", new StringEncoder());
+
                             //加入自己的业务处理handler
-                            IMServerHandler imServerHandler = new IMServerHandler();
-                            imServerHandler.setListener(listener);
-                            imServerHandler.setRedisUtil(redisUtil);
+                            IMServerHandler imServerHandler = beanFactory.getBean(IMServerHandler.class);
                             pipeline.addLast(imServerHandler);
                         }
                     });

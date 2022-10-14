@@ -4,6 +4,7 @@ import com.junlin.netty.IMServer;
 import com.junlin.netty.IMServerHandler;
 import com.junlin.utils.RedisUtil;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -14,12 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class IMSpringBootApplication implements CommandLineRunner {
 
-    @Value("${im.port}")
-    private int imPort;
     @Autowired
-    private RedisUtil redisUtil;
-    @Value("${im.listener}")
-    private String listener;
+    private IMServer imServer;
 
     public static void main(String[] args) {
         SpringApplication.run(IMSpringBootApplication.class, args);
@@ -27,7 +24,6 @@ public class IMSpringBootApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        IMServer imServer = new IMServer(imPort, redisUtil, listener);
-        imServer.run();
+        imServer.run();;
     }
 }
