@@ -33,6 +33,8 @@ public class ChatRoomMember extends BaseEntity {
      */
     private Long userId;
 
+    private String name;
+
     /**
      * 读取的时间
      */

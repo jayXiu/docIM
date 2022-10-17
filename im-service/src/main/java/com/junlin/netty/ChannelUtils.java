@@ -51,6 +51,19 @@ public class ChannelUtils {
 
     public static void online(String name, Long userId, String currHashCode){
         if(StringUtils.isNotEmpty(name)){
+
+            //挤下线，断线操作
+            Object target = redisUtil.get("USERINFO:"+name);
+            if(target != null){
+                UserInfo userInfo = (UserInfo) target;
+                IMChannel imChannel = ChannelUtils.get(userInfo.getHashCode());
+                if(imChannel != null && imChannel.getChannel() != null){
+                    imChannel.getChannel().writeAndFlush("forced offline\n");
+                    imChannel.getChannel().close();
+                    ChannelUtils.removeChannel(imChannel.getHashCode());
+                }
+            }
+
             updateUserStatus(name, userId, currHashCode, Line.ONLINE);
         }
     }
@@ -63,6 +76,7 @@ public class ChannelUtils {
 
     public static void updateUserStatus(String name,Long userId, String hashCode, Line line){
         UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(userId);
         userInfo.setName(name);
         userInfo.setHashCode(hashCode);
         userInfo.setLine(line);

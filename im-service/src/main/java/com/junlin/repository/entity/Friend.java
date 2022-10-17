@@ -27,6 +27,8 @@ public class Friend extends BaseEntity {
      */
     private Long userId;
 
+    private String name;
+
     /**
      * 好友用户ID
      */

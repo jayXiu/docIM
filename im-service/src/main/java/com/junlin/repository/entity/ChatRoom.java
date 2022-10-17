@@ -2,6 +2,7 @@ package com.junlin.repository.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.junlin.common.mybatis.base.BaseEntity;
+import com.junlin.repository.enums.ChatRoomType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -30,7 +31,7 @@ public class ChatRoom extends BaseEntity {
     /**
      * SINGLE单人 GROUP群组
      */
-    private String type;
+    private ChatRoomType type;
 
 
 }

@@ -6,6 +6,7 @@ import com.junlin.netty.ChannelUtils;
 import com.junlin.netty.entity.IMChannel;
 import com.junlin.repository.entity.User;
 import com.junlin.repository.service.UserService;
+import com.junlin.utils.RedisUtil;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class AuthCommandStrategy implements CommandStrategy {
 
     private static String command = "auth";
 
+    @Autowired
+    private RedisUtil redisUtil;
     @Autowired
     private UserService userService;
 
@@ -38,6 +41,8 @@ public class AuthCommandStrategy implements CommandStrategy {
                 imChannel.setHashCode(hashCode+"");
                 ChannelUtils.addChannel(hashCode + "", imChannel);
                 ChannelUtils.online(imChannel.getName(), imChannel.getUserId(), hashCode+"");
+
+
 
                 return "auth success";
             }else{

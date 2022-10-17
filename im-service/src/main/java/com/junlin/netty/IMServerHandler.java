@@ -66,40 +66,6 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
                 channel.writeAndFlush(date + execute + "\n");
             }
         }
-
-
-        /*if(msg.startsWith("auth")){
-            String[] arr = msg.split(" ");
-            if(arr != null && arr.length == 2){
-                imChannel.setName(arr[1]);
-                imChannel.setChannel(channel);
-                imChannel.setHashCode(hashCode+"");
-                ChannelUtils.addChannel(hashCode + "", imChannel);
-                this.online(imChannel.getName(), hashCode+"");
-
-                channel.writeAndFlush("[" + sdf.format(new java.util.Date()) + "]" + "认证成功 \n");
-                return;
-            }
-        }
-
-        if(msg.startsWith("send")){
-            String[] arr = msg.split(" ");
-            if(arr != null && arr.length == 3){
-                Object target = redisUtil.get("USERINFO:"+arr[1]);
-                if(target == null){
-                    //todo 不在线
-                    log.info(arr[1] + "不在线");
-                    channel.writeAndFlush("[" + sdf.format(new java.util.Date()) + "-" + arr[1] + "]" + "不在线 \n");
-                }else{
-                    UserInfo userInfo = (UserInfo) target;
-                    //todo 省略MQ
-                    IMChannel targetChannel = ChannelUtils.get(userInfo.getHashCode());
-                    if(targetChannel != null){
-                        targetChannel.getChannel().writeAndFlush(sdf.format(new java.util.Date()) + "FROM " + imChannel.getName() + "：" + arr[2]);
-                    }
-                }
-            }
-        }*/
     }
 
     @Override
