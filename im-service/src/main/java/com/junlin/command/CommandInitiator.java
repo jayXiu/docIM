@@ -1,6 +1,8 @@
 package com.junlin.command;
 
 import com.junlin.command.strategy.CommandStrategy;
+import io.netty.channel.Channel;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Data
 public class CommandInitiator implements InitializingBean {
 
     @Resource
@@ -36,16 +39,14 @@ public class CommandInitiator implements InitializingBean {
      *
      * @return
      */
-    public void execute(String message, String command) {
+    public String execute(String message, Channel channel) {
 
-        if (command != null) {
-            CommandStrategy strategy = strategys.get(command);
-            if (strategy != null) {
-                strategy.executeCommand(message, command);
-                return;
+        for(CommandStrategy commandStrategy : strategyList){
+            if(commandStrategy.check(message)){
+                return commandStrategy.executeCommand(message, channel);
             }
         }
 
-
+        return "";
     }
 }

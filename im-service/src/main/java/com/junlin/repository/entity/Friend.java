@@ -32,5 +32,5 @@ public class Friend extends BaseEntity {
      */
     private Long friendUserId;
 
-
+    private String friendName;
 }

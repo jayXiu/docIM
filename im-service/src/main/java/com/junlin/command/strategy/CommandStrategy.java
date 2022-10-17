@@ -1,9 +1,12 @@
 package com.junlin.command.strategy;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import io.netty.channel.Channel;
+
 public interface CommandStrategy {
 
 
-    void executeCommand(String message, String command);
+    String executeCommand(String message, Channel channel);
 
     /**
      * 策略key
@@ -11,4 +14,6 @@ public interface CommandStrategy {
      */
     String getCommand();
 
+
+    Boolean check(String message);
 }

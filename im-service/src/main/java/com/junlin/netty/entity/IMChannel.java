@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class IMChannel {
 
+    private Long userId;
+
     private String name;
 
     private String hashCode;

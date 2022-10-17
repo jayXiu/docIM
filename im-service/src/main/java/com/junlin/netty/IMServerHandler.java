@@ -1,5 +1,8 @@
 package com.junlin.netty;
 
+import com.junlin.command.CommandInitiator;
+import com.junlin.command.strategy.CommandStrategy;
+import com.junlin.command.strategy.impl.AuthCommandStrategy;
 import com.junlin.netty.entity.IMChannel;
 import com.junlin.netty.entity.Line;
 import com.junlin.netty.entity.UserInfo;
@@ -16,7 +19,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -29,20 +34,41 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
     private RedisUtil redisUtil;
     @Value("${im.listener}")
     private String listener;
+    @Autowired
+    private CommandInitiator commandInitiator;
+    @Autowired
+    private AuthCommandStrategy authCommandStrategy;
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
+
         String msg = s.replace("\n", "");
         log.info(msg);
 
+        String date = ChannelUtils.date();
+
+        //鉴权
         Channel channel = ctx.channel();
         int hashCode = channel.hashCode();
-
         IMChannel imChannel = ChannelUtils.get(hashCode + "");
+        if(imChannel == null && !authCommandStrategy.check(msg)){
+            channel.writeAndFlush(date + "please auth" + "\n");
+            return;
+        }
 
-        if(msg.startsWith("auth")){
+        //遍历执行命令
+        List<CommandStrategy> strategyList = commandInitiator.getStrategyList();
+        if(strategyList != null && strategyList.size() > 0){
+            String execute = commandInitiator.execute(msg, channel);
+            if(StringUtils.isNotEmpty(execute)){
+                channel.writeAndFlush(date + execute + "\n");
+            }
+        }
+
+
+        /*if(msg.startsWith("auth")){
             String[] arr = msg.split(" ");
             if(arr != null && arr.length == 2){
                 imChannel.setName(arr[1]);
@@ -73,7 +99,7 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
                     }
                 }
             }
-        }
+        }*/
     }
 
     @Override
@@ -131,16 +157,6 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
 
     public void online(String name, String currHashCode){
         if(StringUtils.isNotEmpty(name)){
-            /*Object value = redisUtil.get(name);
-            if(value != null){
-                UserInfo userInfo = (UserInfo) value;
-
-                String hashCode = imChannel.getHashCode();
-                if(!currHashCode.equals(hashCode)){
-                    //todo 通知删除旧的hashCode
-                }
-            }*/
-
             updateUserStatus(name, currHashCode, Line.ONLINE);
         }
     }
