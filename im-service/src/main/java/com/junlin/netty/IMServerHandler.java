@@ -53,7 +53,7 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
         Channel channel = ctx.channel();
         int hashCode = channel.hashCode();
         IMChannel imChannel = ChannelUtils.get(hashCode + "");
-        if(imChannel == null && !authCommandStrategy.check(msg)){
+        if((imChannel == null || imChannel.getUserId() == null) && !authCommandStrategy.check(msg)){
             channel.writeAndFlush(date + "please auth" + "\n");
             return;
         }
@@ -126,19 +126,6 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         log.info("channelActive");
-
-        Channel channel = ctx.channel();
-        int hashCode = channel.hashCode();
-
-        IMChannel imChannel = ChannelUtils.get(hashCode + "");
-        if(imChannel == null){
-            imChannel = new IMChannel();
-            imChannel.setChannel(channel);
-            imChannel.setHashCode(hashCode + "");
-            ChannelUtils.addChannel(hashCode + "", imChannel);
-        }else{
-            this.online(imChannel.getName(), hashCode+"");
-        }
     }
 
     @Override
@@ -148,31 +135,9 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
 
         IMChannel imChannel = ChannelUtils.get(hashCode + "");
         if(imChannel != null){
-            this.offline(imChannel.getName());
+            ChannelUtils.offline(imChannel.getName());
         }
 
         log.info("channelInactive");
-    }
-
-
-    public void online(String name, String currHashCode){
-        if(StringUtils.isNotEmpty(name)){
-            updateUserStatus(name, currHashCode, Line.ONLINE);
-        }
-    }
-
-    public void offline(String name){
-        if(StringUtils.isNotEmpty(name)){
-            updateUserStatus(name, "", Line.OFFLINE);
-        }
-    }
-
-    public void updateUserStatus(String name, String hashCode, Line line){
-        UserInfo userInfo = new UserInfo();
-        userInfo.setName(name);
-        userInfo.setHashCode(hashCode);
-        userInfo.setLine(line);
-        userInfo.setListener(listener);
-        redisUtil.set("USERINFO:"+name, userInfo);
     }
 }

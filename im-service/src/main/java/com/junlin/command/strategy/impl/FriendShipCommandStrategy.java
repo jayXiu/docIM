@@ -1,23 +1,26 @@
 package com.junlin.command.strategy.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.junlin.business.FriendShipBusiness;
 import com.junlin.command.strategy.CommandStrategy;
 import com.junlin.netty.ChannelUtils;
 import com.junlin.netty.entity.IMChannel;
-import com.junlin.repository.entity.User;
+import com.junlin.repository.enums.FriendshipStatus;
 import com.junlin.repository.service.UserService;
 import io.netty.channel.Channel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+//好友操作
 @Service
-public class AuthCommandStrategy implements CommandStrategy {
+public class FriendShipCommandStrategy implements CommandStrategy {
 
-    private static String command = "auth";
+    private static String command = "friendship";
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private FriendShipBusiness friendShipBusiness;
 
     @Override
     public String executeCommand(String message, Channel channel) {
@@ -27,22 +30,17 @@ public class AuthCommandStrategy implements CommandStrategy {
         IMChannel imChannel = ChannelUtils.get(hashCode + "");
 
         String[] arr = message.split(" ");
-        if(arr != null && arr.length == 3){
-            userService.lambdaQuery();
+        if(arr != null && arr.length >= 2){
 
-            User user = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getName, arr[1]).eq(User::getPassword, arr[2]));
-            if(user != null){
-                imChannel.setUserId(user.getId());
-                imChannel.setName(arr[1]);
-                imChannel.setChannel(channel);
-                imChannel.setHashCode(hashCode+"");
-                ChannelUtils.addChannel(hashCode + "", imChannel);
-                ChannelUtils.online(imChannel.getName(), imChannel.getUserId(), hashCode+"");
-
-                return "auth success";
-            }else{
-                return "user not exists";
+            String result = "";
+            switch (arr[1]){
+                case "show": result = friendShipBusiness.showFriendShip(imChannel.getUserId());break;
+                case "add": result = friendShipBusiness.addFriendShip(imChannel.getUserId(), arr[2]);break;
+                case "agree": result = friendShipBusiness.agreeFriendShip(imChannel.getUserId(), arr[2], FriendshipStatus.AGREE);break;
+                case "disagree": result = friendShipBusiness.agreeFriendShip(imChannel.getUserId(), arr[2], FriendshipStatus.DISAGREE);break;
             }
+
+            return result;
         }
 
         return "command error";

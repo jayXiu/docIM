@@ -2,6 +2,7 @@ package com.junlin.repository.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.junlin.common.mybatis.base.BaseEntity;
+import com.junlin.repository.enums.FriendshipStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -27,15 +28,19 @@ public class Friendship extends BaseEntity {
      */
     private Long aUserId;
 
+    private String name;
+
     /**
      * 受邀用户ID
      */
     private Long bUserId;
 
+    private String friendName;
+
     /**
      * ADD添加 AGREE同意 DISAGREE不同意 REMOVE移除
      */
-    private String status;
+    private FriendshipStatus status;
 
 
 }

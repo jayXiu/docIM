@@ -38,7 +38,7 @@ public class SendCommandStrategy implements CommandStrategy {
             Friend friend = friendService.getOne(Wrappers.<Friend>lambdaQuery().eq(Friend::getUserId, imChannel.getUserId())
                     .eq(Friend::getFriendName, arr[1]));
             if(friend == null){
-                return "friend not exists\n";
+                return "friend not exists";
             }
 
             Object target = redisUtil.get("USERINFO:"+arr[1]);
@@ -48,7 +48,7 @@ public class SendCommandStrategy implements CommandStrategy {
                 IMChannel targetChannel = ChannelUtils.get(userInfo.getHashCode());
                 if(targetChannel != null){
                     targetChannel.getChannel().writeAndFlush(ChannelUtils.date() + "FROM " + imChannel.getName() + "：" + arr[2] + "\n");
-                    return "";
+                    return "success";
                 }
             }
 

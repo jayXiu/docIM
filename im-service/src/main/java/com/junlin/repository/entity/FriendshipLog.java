@@ -3,6 +3,7 @@ package com.junlin.repository.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
 import com.junlin.common.mybatis.base.BaseEntity;
+import com.junlin.repository.enums.FriendshipStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -36,7 +37,7 @@ public class FriendshipLog extends BaseEntity {
     /**
      * ADD添加 AGREE同意 DISAGREE不同意 REMOVE移除
      */
-    private String status;
+    private FriendshipStatus status;
 
     /**
      * 日志时间

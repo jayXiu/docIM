@@ -49,19 +49,19 @@ public class ChannelUtils {
     }
 
 
-    public static void online(String name, String currHashCode){
+    public static void online(String name, Long userId, String currHashCode){
         if(StringUtils.isNotEmpty(name)){
-            updateUserStatus(name, currHashCode, Line.ONLINE);
+            updateUserStatus(name, userId, currHashCode, Line.ONLINE);
         }
     }
 
     public static void offline(String name){
         if(StringUtils.isNotEmpty(name)){
-            updateUserStatus(name, "", Line.OFFLINE);
+            updateUserStatus(name, null, null, Line.OFFLINE);
         }
     }
 
-    public static void updateUserStatus(String name, String hashCode, Line line){
+    public static void updateUserStatus(String name,Long userId, String hashCode, Line line){
         UserInfo userInfo = new UserInfo();
         userInfo.setName(name);
         userInfo.setHashCode(hashCode);
