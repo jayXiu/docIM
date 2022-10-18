@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 //好友操作
 @Service
+@Deprecated
 public class FriendShipCommandStrategy implements CommandStrategy {
 
     private static String command = "friendship";

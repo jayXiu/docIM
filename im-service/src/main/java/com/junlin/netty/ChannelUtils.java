@@ -87,4 +87,8 @@ public class ChannelUtils {
     public static String date(){
         return "[" + sdf.format(new Date()) + "] ";
     }
+
+    public static String date(Date date){
+        return "[" + sdf.format(date) + "] ";
+    }
 }

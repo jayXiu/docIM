@@ -24,6 +24,7 @@ import java.util.Date;
 
 @Service
 @Slf4j
+@Deprecated
 public class SendCommandStrategy implements CommandStrategy {
 
     private static String command = "send";

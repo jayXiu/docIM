@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.junlin.repository.mapper.FriendMapper">
+
+
+    <select id="getFriends" resultType="com.junlin.vo.FriendVO">
+        select
+        b.chat_room_id, b.user_id, b.name,
+        IF(b.user_id = #{userId},
+        (select count(1) from t_chat_room_record d where b.chat_room_id = d.chat_room_id and b.read_time <![CDATA[ < ]]>  send_time and b.user_id != d.send_user_id),
+        0) unread
+        from t_chat_room a INNER JOIN t_chat_room_member b on a.id = b.chat_room_id
+        where a.type = 'SINGLE'
+        and EXISTS (select 1 from t_chat_room_member c where a.id = c.chat_room_id and c.user_id = #{userId})
+    </select>
+</mapper>

@@ -1,5 +1,6 @@
 package com.junlin.netty;
 
+import com.junlin.business.ChatRoomBusiness;
 import com.junlin.command.CommandInitiator;
 import com.junlin.command.strategy.CommandStrategy;
 import com.junlin.command.strategy.impl.AuthCommandStrategy;
@@ -38,8 +39,8 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
     private CommandInitiator commandInitiator;
     @Autowired
     private AuthCommandStrategy authCommandStrategy;
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    @Autowired
+    private ChatRoomBusiness chatRoomBusiness;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
@@ -55,6 +56,18 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
         IMChannel imChannel = ChannelUtils.get(hashCode + "");
         if((imChannel == null || imChannel.getUserId() == null) && !authCommandStrategy.check(msg)){
             channel.writeAndFlush(date + "please auth" + "\n");
+            return;
+        }
+
+        //自由聊天
+        if(imChannel.getChatRoomId() != null){
+            if("close chat".equals(msg)){
+                chatRoomBusiness.closeChat(imChannel);
+                channel.writeAndFlush(date + "close success" + "\n");
+                return;
+            }
+
+            chatRoomBusiness.chatFree(imChannel, msg);
             return;
         }
 
