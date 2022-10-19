@@ -33,6 +33,8 @@ public class ChatRoomRecord extends BaseEntity {
      */
     private Long sendUserId;
 
+    private String sendUserName;
+
     /**
      * 发送时间
      */

@@ -11,6 +11,7 @@ import com.junlin.repository.service.ChatRoomRecordService;
 import com.junlin.repository.service.ChatRoomService;
 import com.junlin.repository.service.FriendService;
 import com.junlin.utils.RedisUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +33,14 @@ public class ChatRoomBusiness {
 
     public void chatFree(IMChannel imChannel, String message){
 
+        if(StringUtils.isEmpty(message)){
+            return;
+        }
+
         Date date = new Date();
         //保存聊天记录
         ChatRoomRecord record = new ChatRoomRecord();
-        record.setSendTime(date).setSendUserId(imChannel.getUserId()).setContent(message).setChatRoomId(imChannel.getChatRoomId());
+        record.setSendTime(date).setSendUserId(imChannel.getUserId()).setSendUserName(imChannel.getName()).setContent(message).setChatRoomId(imChannel.getChatRoomId());
         chatRoomRecordService.save(record);
 
         List<ChatRoomMember> members = chatRoomMemberService.list(Wrappers.<ChatRoomMember>lambdaQuery()

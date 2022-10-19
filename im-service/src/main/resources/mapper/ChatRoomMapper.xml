@@ -9,4 +9,13 @@
         AND EXISTS (select 1 from t_chat_room_member b where b.chat_room_id = a.id  and b.user_id = #{aUserId})
         AND EXISTS (select 1 from t_chat_room_member c where c.chat_room_id = a.id and c.user_id = #{bUserId})
     </select>
+
+
+    <select id="getGroupsByUserId" resultType="com.junlin.vo.GroupVO">
+        select a.id chatRoomId, a.name,
+        (select count(1) from t_chat_room_record d where d.chat_room_id = a.id and b.read_time <![CDATA[ < ]]>  d.send_time and b.user_id != d.send_user_id ) unread
+        from t_chat_room a
+        inner join t_chat_room_member b on a.id = b.chat_room_id
+        where a.type = 'GROUP' and b.user_id = #{userId}
+    </select>
 </mapper>

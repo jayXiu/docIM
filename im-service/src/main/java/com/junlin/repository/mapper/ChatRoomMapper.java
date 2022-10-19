@@ -2,7 +2,10 @@ package com.junlin.repository.mapper;
 
 import com.junlin.repository.entity.ChatRoom;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.junlin.vo.GroupVO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +20,6 @@ public interface ChatRoomMapper extends BaseMapper<ChatRoom> {
 
     ChatRoom getChatRoomByAB(@Param("aUserId") Long aUserId, @Param("bUserId") Long bUserId);
 
+
+    List<GroupVO> getGroupsByUserId(@Param("userId") Long userId);
 }

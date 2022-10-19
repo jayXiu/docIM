@@ -76,7 +76,10 @@ public class IMServerHandler extends SimpleChannelInboundHandler<String> {
         if(strategyList != null && strategyList.size() > 0){
             String execute = commandInitiator.execute(msg, channel);
             if(StringUtils.isNotEmpty(execute)){
-                channel.writeAndFlush(date + execute + "\n");
+                if(!execute.endsWith("\n")){
+                    execute += "\n";
+                }
+                channel.writeAndFlush(date + execute);
             }
         }
     }
