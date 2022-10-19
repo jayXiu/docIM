@@ -11,4 +11,7 @@
 打开群组聊天室：open group [groupname]
 关闭聊天室：close chat
 
+部署：nc 106.55.231.4 7000
+测试账号：jack/123456、kate/123456
+
 ![img_1.png](img_1.png)
